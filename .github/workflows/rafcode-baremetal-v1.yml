@@ -15,5 +15,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2 immutable SHA
-      - name: Verify compilers, LLD, symbols, host tests and cross ELF link
+      - name: Verify authorial source Git blobs
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git hash-object rafcode/baremetal_v1/src/raf_octets.c)" = '69a89652e97bcee4195ced28c431ce89aa598f69'
+          test "$(git hash-object rafcode/baremetal_v1/include/raf_octets.h)" = 'f84a313fbd091cf0b9448b81dbe379a7af813698'
+          test "$(git hash-object rafcode/baremetal_v1/tests/test_octets.c)" = '0a63b460349bff7c3cc47f84f6d5bdb72adf7aa8'
+          test "$(git hash-object rafcode/baremetal_v1/verify_baremetal.sh)" = '71daafd1817c6074349823627e41f4c1b363ab27'
+          echo "PASS exact authorial Git blob parity"
+      - name: Install CI-only LLD linker (not a core runtime dependency)
+        shell: bash
+        run: |
+          set -euo pipefail
+          if ! command -v ld.lld >/dev/null 2>&1; then
+            sudo apt-get update -qq
+            sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends lld
+          fi
+          command -v ld.lld
+          ld.lld --version
+      - name: Verify compilers, symbols, executable ARM ELF and no dynamic imports
+        shell: bash
         run: sh rafcode/baremetal_v1/verify_baremetal.sh
