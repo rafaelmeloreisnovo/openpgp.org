@@ -26,3 +26,13 @@ The script builds GCC/Clang `-O0/-O2/-Os` hosted test programs and checks freest
 Source ≠ artifact ≠ execution ≠ evidence ≠ security claim. `claim_allowed=false` until independent gates are documented.
 
 See [LICENSE_SCOPE.md](LICENSE_SCOPE.md) for provenance and [RFC 9580](https://www.rfc-editor.org/rfc/rfc9580.html) for the normative packet format.
+
+## V2 control gate and operational status
+
+The companion [GATES_V2.md](GATES_V2.md) records typed unknowns, independent
+promotions, merge-control limits, and rollback. The hardened verifier now
+requires `gcc`, `clang`, `nm`, and `mktemp`; rejects failed `nm` invocations
+instead of silently interpreting them as no unresolved symbols; exercises an
+exhaustive 64×256 framing matrix and 131072 deterministic adverse spans under
+both hosted compilers and ASan/UBSan. Hosted sanitizer PASS is **not** a
+hardware, side-channel, interoperability, or crypto validation.
