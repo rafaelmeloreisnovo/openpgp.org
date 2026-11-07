@@ -1,0 +1,19 @@
+name: RAFCODE baremetal octets scoped host and ARM link gate
+on:
+  pull_request:
+    paths:
+      - "rafcode/baremetal_v1/**"
+      - ".github/workflows/rafcode-baremetal-v1.yml"
+  push:
+    paths:
+      - "rafcode/baremetal_v1/**"
+      - ".github/workflows/rafcode-baremetal-v1.yml"
+permissions:
+  contents: read
+jobs:
+  freestanding:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2 immutable SHA
+      - name: Verify compilers, LLD, symbols, host tests and cross ELF link
+        run: sh rafcode/baremetal_v1/verify_baremetal.sh
